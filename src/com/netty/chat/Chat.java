@@ -88,6 +88,24 @@ public class Chat  {
             }
         });
         refreshButton.addActionListener(connectListener);
+        //新增点击改名事件
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                AskName dialog = new AskName();
+                dialog.pack();
+                dialog.setVisible(true);
+            }
+        });
+        //新增右键菜单弹出
+        textArea.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                AskClear askClear = new AskClear();
+                askClear.pack();
+                askClear.setVisible(true);
+            }
+        });
     }
 
     private Chat() {
@@ -122,7 +140,7 @@ public class Chat  {
             refreshButton.addActionListener(disconnectListener);
             refreshButton.setText("断开");
         }catch (Exception e){
-            textArea.append(e.getMessage());
+            textArea.insert(e.getMessage(),0);
             throw e;
         }
 
@@ -146,10 +164,10 @@ public class Chat  {
                 channel.writeAndFlush(formatWrite(msg));
                 textField.setText("");
             }else {
-                textArea.append(formatWrite("write fail"));
+                textArea.insert(formatWrite("write fail"),0);
             }
         }catch (Exception e){
-            textArea.append(e.getMessage());
+            textArea.insert(e.getMessage(),0);
             throw e;
         }
     }
@@ -159,7 +177,7 @@ public class Chat  {
             //接收连接成功包
             channel.writeAndFlush(formatWrite("加入聊天室。"));
         }else {
-            textArea.append("\n" + msg);
+            textArea.insert("\n" + msg,0);
         }
     }
 
@@ -171,4 +189,7 @@ public class Chat  {
         return  DateFormatUtil.formatTime(new Date()) + " " +label.getText() +  ": "+ msg ;
     }
 
+    public void clearTextArea(){
+        textArea.setText("");
+    }
 }
